@@ -1,6 +1,6 @@
 # PersonPicture
 info:
-  title: П API
+  title: API
   version: 1.0.0
   
   ресурс Account имеет различные конечные точки, которые также описаны:
