@@ -26,9 +26,9 @@ namespace PersonPicture.Controllers
             return Ok();
         }
         [HttpPost("AddPicture")]
-        public IActionResult AddPicture([FromForm] FileUpload file)
+        public async Task<IActionResult> AddPicture([FromForm] FileUpload file)
         {
-           _personService.AddPicture( file);
+          await _personService.AddPicture( file);
             return Ok();
         }
         [HttpGet("GetAllPicture")]
