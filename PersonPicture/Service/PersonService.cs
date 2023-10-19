@@ -57,9 +57,11 @@ namespace PersonPicture.Service
         {
             // var files = httpContext.Request.Form.Files;
 
-            //string webRootPath = _webHostEnvironment.WebRootPath;         
-           
-            string upload = _configuration["ImageDirectory"];
+
+            string webRootPath = _webHostEnvironment.WebRootPath;
+
+            string upad = _configuration["ImageDirectory"];
+            string upload = webRootPath + upad;
             string fileName = Guid.NewGuid().ToString();
             // string extention = Path.GetExtension(files[0].FileName);
             string extention = Path.GetExtension(picture.files.FileName);
