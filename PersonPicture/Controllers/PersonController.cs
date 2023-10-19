@@ -20,9 +20,9 @@ namespace PersonPicture.Controllers
         }
         [HttpPost("AddFriend")]
 
-        public IActionResult AddFriend(string id)
+        public async Task<IActionResult> AddFriendAsync(string id)
         {
-            _personService.AddFriends(id);
+          await _personService.AddFriends(id);
             return Ok();
         }
         [HttpPost("AddPicture")]
@@ -32,17 +32,17 @@ namespace PersonPicture.Controllers
             return Ok();
         }
         [HttpGet("GetAllPicture")]
-        public IActionResult GetAllPicture()
+        public async Task<IActionResult> GetAllPicture()
         {
             var list = new List<Picture>();
-            list = _personService.AllMyPicture();
+            list =await _personService.AllMyPictureAsync();
             return View(list);
         }
         [HttpGet("GetPicturesFriends")]
-        public IActionResult GetAllFriendsPictures(string id)
+        public async Task<IActionResult> GetAllFriendsPictures(string id)
         {            
             var list = new List<Picture>();
-            list = _personService.GetAllFriendsPictures(id);
+            list =await _personService.GetAllFriendsPicturesAsync(id);
             if (list==null)
             {
                 return NoContent();

@@ -33,8 +33,8 @@ namespace PersonPicture
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
             })
-          .AddEntityFrameworkStores<AppDbContext>();
-        
+          .AddEntityFrameworkStores<AppDbContext>()
+         .AddDefaultTokenProviders();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -4,10 +4,9 @@ namespace PersonPicture.Service
 {
     public interface IPersonService
     {
-        void AddFriends(string id);
-        void AddPicture(FileUpload file);
-        List<Picture> AllMyPicture();
-        List<Picture> GetAllFriendsPictures(string id);
-   
+        Task AddFriends(string id);
+        void AddPicture(FileUpload file);       
+        Task<List<Picture>> AllMyPictureAsync();       
+        Task<List<Picture>> GetAllFriendsPicturesAsync(string id);
     }
 }

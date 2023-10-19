@@ -1,4 +1,5 @@
-﻿using PersonPicture.DAL;
+﻿using Microsoft.EntityFrameworkCore;
+using PersonPicture.DAL;
 using PersonPicture.Models;
 using System.Security.Claims;
 
@@ -8,15 +9,15 @@ namespace PersonPicture.Service
     {
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private IConfiguration configuration;
-        private readonly IWebHostEnvironment webHostEnvironment;
+        private IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
        
         public PersonService(AppDbContext context, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
-            this.configuration = configuration;
-            this.webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
           
         }
         private Person GetUser()
@@ -27,37 +28,38 @@ namespace PersonPicture.Service
             {
                 userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             }
-            var user = _context.DbPeoples.FirstOrDefault(u => u.Id == userId);
+            var user =  _context.DbPeoples.FirstOrDefault(u => u.Id == userId);
             return user;
         }
-        private Person GetFriend(string id)
+        private async Task<Person> GetFriend(string id)
         {            
-            var user = _context.DbPeoples.FirstOrDefault(u => u.Id == id);
+            var user = await _context.DbPeoples.FirstOrDefaultAsync(u => u.Id == id);
             return user;
         }
-        public void AddFriends(string id)
+        public async Task AddFriends(string id)
         {
+            var friend = await GetFriend(id);
             var per = GetUser();
-            var friend=GetFriend(id);
+           
           
-            var ListFriends = _context.Entry(per)
+            var listFriends = _context.Entry(per)
                   .Collection(p => p.Friends)
                   .Query()
                   .ToList();
-            if (!ListFriends.Contains(friend))
+            if (!listFriends.Contains(friend))
             {
                 per.Friends.Add(friend);
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
             }
        
         }
-        public void AddPicture( FileUpload picture)
+        public async void AddPicture( FileUpload picture)
         {
            // var files = httpContext.Request.Form.Files;
            
-            string webRootPath = webHostEnvironment.WebRootPath;
+            string webRootPath = _webHostEnvironment.WebRootPath;
 
-            string upad = configuration["ImageDirectory"];
+            string upad = _configuration["ImageDirectory"];
             string upload = webRootPath + upad;
             string fileName = Guid.NewGuid().ToString();
            // string extention = Path.GetExtension(files[0].FileName);
@@ -78,9 +80,9 @@ namespace PersonPicture.Service
             };
           
             per.AddPicture(pic);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }       
-        public List<Picture> AllMyPicture()
+        public async Task<List<Picture>> AllMyPictureAsync()
         {
             var per = GetUser();
             var listPictures = new List<Picture>();        
@@ -89,7 +91,7 @@ namespace PersonPicture.Service
                    .Query()
                    .ToList();            
 
-            string upload = configuration["ImageDirectory"];
+            string upload = _configuration["ImageDirectory"];
            
             foreach (var item in pictures)
             {
@@ -103,10 +105,10 @@ namespace PersonPicture.Service
             }
             return listPictures;
         }
-        public List<Picture> GetAllFriendsPictures(string id)
+        public async Task<List<Picture>> GetAllFriendsPicturesAsync(string id)
         {
             var user = GetUser();
-            var target = GetFriend(id);
+            var target =await GetFriend(id);
             var look = LookingPikture(user, target);
         
             if (look==true)
@@ -128,31 +130,24 @@ namespace PersonPicture.Service
         {
             var userbool = false;
             var targetbool = false;
-            var ListFriends = _context.Entry(user)
+            var listFriends = _context.Entry(user)
                        .Collection(p => p.Friends)
                        .Query()
                        .ToList();
-            if (ListFriends.Contains(target))
+            if (listFriends.Contains(target))
             {
                 userbool = true;
             }
-            ListFriends = _context.Entry(target)
+            listFriends = _context.Entry(target)
                       .Collection(p => p.Friends)
                       .Query()
                       .ToList();
-            if (ListFriends.Contains(user))
+            if (listFriends.Contains(user))
             {
                 targetbool = true;
             }
-
-            if (userbool == true && targetbool==true)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return userbool == true && targetbool == true;
+          
         }
     }
 }

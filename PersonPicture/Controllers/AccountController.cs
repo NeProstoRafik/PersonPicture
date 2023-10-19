@@ -23,6 +23,7 @@ namespace PersonPicture.Controllers
             return View();
         }
         [HttpPost("Register")]
+      
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -39,7 +40,7 @@ namespace PersonPicture.Controllers
 
 
             }
-            return NoContent();
+            return BadRequest();
         }
 
         [HttpGet]
@@ -50,7 +51,7 @@ namespace PersonPicture.Controllers
         }
        
         [HttpPost("Login")]
-  
+
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
