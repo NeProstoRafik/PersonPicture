@@ -53,7 +53,7 @@ namespace PersonPicture.Service
             }
        
         }
-        public async void AddPicture( FileUpload picture)
+        public void AddPicture( FileUpload picture)
         {
            // var files = httpContext.Request.Form.Files;
            
@@ -80,7 +80,7 @@ namespace PersonPicture.Service
             };
           
             per.AddPicture(pic);
-           await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }       
         public async Task<List<Picture>> AllMyPictureAsync()
         {
