@@ -39,7 +39,7 @@ namespace PersonPicture.Controllers
             return View(list);
         }
         [HttpGet("GetPicturesFriends")]
-        public async Task<IActionResult> GetAllFriendsPictures(string id)
+        public async Task<IActionResult> GetAllFriendsPicturesAsync(string id)
         {            
             var list = new List<Picture>();
             list =await _personService.GetAllFriendsPicturesAsync(id);
